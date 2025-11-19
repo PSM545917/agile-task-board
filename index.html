@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agile Task Board - Tablero Kanban con Drag & Drop">
+    <title>Agile Task Board - Kanban Board</title>
+    <link rel="stylesheet" href="src/styles/board.css">
+</head>
+<body>
+    <!-- Header principal -->
+    <header class="app-header">
+        <div class="container">
+            <h1>📋 Agile Task Board</h1>
+            <p class="subtitle">Gestiona tus tareas con metodología Kanban</p>
+        </div>
+    </header>
+
+    <!-- Contenedor principal -->
+    <main class="main-container">
+        <div class="container">
+            <!-- Sección de acciones -->
+            <section class="board-actions">
+                <button id="addTaskBtn" class="btn btn-primary">
+                    ➕ Nueva Tarea
+                </button>
+                <div class="board-stats">
+                    <span class="stat-item">
+                        <strong id="totalTasks">0</strong> tareas totales
+                    </span>
+                </div>
+            </section>
+
+            <!-- Tablero Kanban -->
+            <section class="kanban-board">
+                <!-- Columna TO DO -->
+                <article class="kanban-column" data-status="todo">
+                    <header class="column-header">
+                        <h2 class="column-title">📝 To Do</h2>
+                        <span class="task-count" id="count-todo">0</span>
+                    </header>
+                    <div class="column-content" id="column-todo" data-column="todo">
+                        <!-- Las tareas se cargarán dinámicamente aquí -->
+                    </div>
+                </article>
+
+                <!-- Columna IN PROGRESS -->
+                <article class="kanban-column" data-status="inprogress">
+                    <header class="column-header">
+                        <h2 class="column-title">🚀 In Progress</h2>
+                        <span class="task-count" id="count-inprogress">0</span>
+                    </header>
+                    <div class="column-content" id="column-inprogress" data-column="inprogress">
+                        <!-- Las tareas se cargarán dinámicamente aquí -->
+                    </div>
+                </article>
+
+                <!-- Columna DONE -->
+                <article class="kanban-column" data-status="done">
+                    <header class="column-header">
+                        <h2 class="column-title">✅ Done</h2>
+                        <span class="task-count" id="count-done">0</span>
+                    </header>
+                    <div class="column-content" id="column-done" data-column="done">
+                        <!-- Las tareas se cargarán dinámicamente aquí -->
+                    </div>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal para crear nueva tarea -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3>✨ Nueva Tarea</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </header>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="taskTitle">Título *</label>
+                    <input 
+                        type="text" 
+                        id="taskTitle" 
+                        name="title" 
+                        placeholder="Ej: Implementar login de usuarios"
+                        required
+                        maxlength="100"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Descripción</label>
+                    <textarea 
+                        id="taskDescription" 
+                        name="description" 
+                        rows="4"
+                        placeholder="Describe los detalles de la tarea..."
+                        maxlength="500"
+                    ></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Crear Tarea
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="container">
+            <p>&copy; 2025 Agile Task Board | Vanilla JS + LocalStorage</p>
+        </div>
+    </footer>
+
+    <!-- Script principal -->
+    <script src="src/scripts/board.js"></script>
+</body>
+</html>
