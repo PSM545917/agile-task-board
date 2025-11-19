@@ -1,0 +1,98 @@
+@startuml Agile Task Board - Component Diagram
+!define PRESENTATION #FFCCBC
+!define LOGIC #BBDEFB
+!define DATA #C8E6C9
+
+title Arquitectura de Componentes - Agile Task Board\n(Frontend Only - HTML/CSS/JS Vanilla + LocalStorage)
+
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 80
+
+' ==================== CAPA DE PRESENTACIÓN ====================
+package "Capa de Presentación" PRESENTATION {
+  [index.html\n+ styles.css\n+ app.js] as Frontend
+  
+  package "UI Components" {
+    [LoginForm] as Login
+    [KanbanBoard] as Kanban
+    [TaskModal] as Modal
+    [Dashboard] as Dash
+    [FilterBar] as Filter
+  }
+}
+
+' ==================== CAPA DE LÓGICA ====================
+package "Capa de Lógica de Negocio" LOGIC {
+  [AuthManager\n---\nlogin()\nlogout()\nisAuthenticated()\ngetCurrentUser()] as Auth
+  
+  [BoardManager\n---\ngetColumns()\nmoveTask()\ndragAndDrop()\nupdateBoard()] as Board
+  
+  [TaskManager\n---\ncreateTask()\neditTask()\ndeleteTask()\nassignUser()\naddTag()\naddComment()] as Task
+  
+  [MetricsDashboard\n---\ncalculateBurndown()\ngetTasksByUser()\ngetTasksByStatus()\ngenerateCharts()] as Metrics
+}
+
+' ==================== CAPA DE DATOS ====================
+package "Capa de Datos" DATA {
+  [StorageManager\n---\nsaveData()\nloadData()\ndeleteData()\nclearStorage()] as Storage
+  
+  database "LocalStorage\n---\nusers\ncurrentSession\ntasks\ncolumns\ntags\ncomments\ntheme" as LS
+}
+
+' ==================== DEPENDENCIA EXTERNA ====================
+[Chart.js\n(CDN)] as ChartJS #FFE0B2
+
+' ==================== RELACIONES CAPA PRESENTACIÓN -> LÓGICA ====================
+Frontend --> Login
+Frontend --> Kanban
+Frontend --> Modal
+Frontend --> Dash
+Frontend --> Filter
+
+Login --> Auth
+Kanban --> Board
+Modal --> Task
+Dash --> Metrics
+Filter --> Task
+
+' ==================== RELACIONES CAPA LÓGICA -> DATOS ====================
+Auth --> Storage
+Board --> Storage
+Task --> Storage
+Metrics --> Storage
+
+' ==================== RELACIONES ENTRE MANAGERS ====================
+Board --> Task : "obtiene tareas"
+Metrics --> Task : "lee tareas"
+Metrics --> Board : "lee estado"
+
+' ==================== STORAGE -> LOCALSTORAGE ====================
+Storage --> LS
+
+' ==================== DEPENDENCIA EXTERNA ====================
+Metrics --> ChartJS
+
+' ==================== LEYENDA ====================
+legend bottom
+  <PRESENTATION> **Capa de Presentación** - Interfaz de usuario
+  <LOGIC> **Capa de Lógica de Negocio** - Controladores y gestión
+  <DATA> **Capa de Datos** - Persistencia local
+  <#FFE0B2> **Dependencias Externas** - Librerías CDN
+endlegend
+
+note right of Auth
+  **Usuarios hardcoded:**
+  admin/admin123
+  user1/pass1
+  user2/pass2
+end note
+
+note left of LS
+  **Límite:** ~5-10MB
+  **Alcance:** Por dominio
+  **Formato:** JSON
+end note
+
+@enduml
