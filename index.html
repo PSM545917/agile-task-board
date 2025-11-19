@@ -31,6 +31,54 @@
                 </div>
             </section>
 
+
+
+
+
+
+
+            <section class="filter-bar">
+                <div class="filter-group">
+                    <label for="filterPerson">👤 Filtrar por persona:</label>
+                    <select id="filterPerson" class="filter-select">
+                        <option value="">Todas las personas</option>
+                        <option value="Ana Gómez">Ana Gómez</option>
+                        <option value="Luis Martínez">Luis Martínez</option>
+                        <option value="Marta Ruiz">Marta Ruiz</option>
+                        <option value="Pablo Schmidt">Pablo Schmidt</option>
+                        <option value="Sofía López">Sofía López</option>
+                    </select>
+                </div>
+    
+                <div class="filter-group">
+                    <label for="filterTag">🏷️ Filtrar por etiqueta:</label>
+                    <select id="filterTag" class="filter-select">
+                        <option value="">Todas las etiquetas</option>
+                        <option value="Bug">🐛 Bug</option>
+                        <option value="Feature">✨ Feature</option>
+                        <option value="Documentation">📚 Documentation</option>
+                        <option value="Testing">🧪 Testing</option>
+                        <option value="Urgente">⚠️ Urgente</option>
+                    </select>
+                </div>
+    
+                <button id="clearFilters" class="btn btn-secondary btn-small">
+                    Limpiar filtros
+                </button>
+            </section>
+
+
+
+
+
+
+            
+
+
+
+
+
+
             <!-- Tablero Kanban -->
             <section class="kanban-board">
                 <!-- Columna TO DO -->
@@ -98,6 +146,53 @@
                         maxlength="500"
                     ></textarea>
                 </div>
+
+
+
+                <!-- NUEVO: Select de persona asignada -->
+                <div class="form-group">
+                    <label for="taskAssignee">👤 Asignado a</label>
+                    <select id="taskAssignee" name="assignee" class="form-select">
+                        <option value="">Sin asignar</option>
+                        <option value="Ana Gómez">Ana Gómez</option>
+                        <option value="Luis Martínez">Luis Martínez</option>
+                        <option value="Marta Ruiz">Marta Ruiz</option>
+                        <option value="Pablo Schmidt">Pablo Schmidt</option>
+                        <option value="Sofía López">Sofía López</option>
+                    </select>
+                </div>
+    
+    <!-- NUEVO: Multi-select de etiquetas -->
+                <div class="form-group">
+                    <label>🏷️ Etiquetas</label>
+                    <div class="tags-container">
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="Bug">
+                            <span class="tag-label tag-bug">🐛 Bug</span>
+                        </label>
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="Feature">
+                            <span class="tag-label tag-feature">✨ Feature</span>
+                        </label>
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="Documentation">
+                            <span class="tag-label tag-documentation">📚 Documentation</span>
+                        </label>
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="Testing">
+                            <span class="tag-label tag-testing">🧪 Testing</span>
+                        </label>
+                        <label class="tag-checkbox">
+                            <input type="checkbox" name="tags" value="Urgente">
+                            <span class="tag-label tag-urgente">⚠️ Urgente</span>
+                        </label>
+                    </div>
+                </div>
+
+
+
+
+
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="cancelBtn">
                         Cancelar

@@ -15,6 +15,21 @@
 // ============================================
 const STORAGE_KEY = 'agile_tasks_board';
 const COLUMNS = ['todo', 'inprogress', 'done'];
+const PEOPLE = [
+    { name: 'Ana Gómez', initials: 'AG', color: 'ana' },
+    { name: 'Luis Martínez', initials: 'LM', color: 'luis' },
+    { name: 'Marta Ruiz', initials: 'MR', color: 'marta' },
+    { name: 'Pablo Schmidt', initials: 'PS', color: 'pablo' },
+    { name: 'Sofía López', initials: 'SL', color: 'sofia' }
+];
+
+const TAGS = ['Bug', 'Feature', 'Documentation', 'Testing', 'Urgente'];
+
+// Estado de filtros
+let activeFilters = {
+    person: '',
+    tag: ''
+};
 
 // ============================================
 // ESTADO DE LA APLICACIÓN
@@ -86,6 +101,8 @@ function createSampleTasks() {
             title: 'Configurar repositorio Git',
             description: 'Crear repositorio y estructura de carpetas inicial',
             status: 'done',
+            assignee: 'Ana Gómez',
+            tags: ['Documentation'],
             createdAt: new Date().toISOString()
         },
         {
@@ -93,6 +110,8 @@ function createSampleTasks() {
             title: 'Implementar tablero Kanban',
             description: 'Crear las tres columnas con drag & drop funcional',
             status: 'inprogress',
+            assignee: 'Luis Martínez',
+            tags: ['Feature', 'Urgente'],
             createdAt: new Date().toISOString()
         },
         {
@@ -100,6 +119,8 @@ function createSampleTasks() {
             title: 'Añadir autenticación',
             description: 'Sistema de login básico con LocalStorage',
             status: 'todo',
+            assignee: 'Marta Ruiz',
+            tags: ['Feature'],
             createdAt: new Date().toISOString()
         }
     ];
@@ -139,6 +160,11 @@ function renderBoard() {
 function renderTask(task) {
     const columnElement = document.getElementById(`column-${task.status}`);
     if (!columnElement) return;
+
+
+    if (!passesFilters(task)) {
+        return; // No renderizar si no pasa los filtros
+    }
     
     // Crear elemento de tarjeta
     const taskCard = document.createElement('div');
@@ -153,6 +179,35 @@ function renderTask(task) {
         month: 'short',
         year: 'numeric'
     });
+
+
+
+    // Generar HTML de asignado
+    let assigneeHTML = '';
+    if (task.assignee) {
+        const person = PEOPLE.find(p => p.name === task.assignee);
+        if (person) {
+            assigneeHTML = `
+                <div class="task-assignee">
+                    <div class="assignee-avatar assignee-${person.color}">
+                        ${person.initials}
+                    </div>
+                    <span>${escapeHtml(person.name)}</span>
+                </div>
+            `;
+        }
+    }
+    
+    // Generar HTML de etiquetas
+    let tagsHTML = '';
+    if (task.tags && task.tags.length > 0) {
+        tagsHTML = '<div class="task-tags">';
+        task.tags.forEach(tag => {
+            const tagClass = tag.toLowerCase();
+            tagsHTML += `<span class="task-tag tag-${tagClass}">${escapeHtml(tag)}</span>`;
+        });
+        tagsHTML += '</div>';
+    }
     
     // Construir HTML de la tarjeta
     taskCard.innerHTML = `
@@ -161,7 +216,9 @@ function renderTask(task) {
             <span class="task-id">#${task.id.slice(0, 6)}</span>
         </div>
         ${task.description ? `<p class="task-description">${escapeHtml(task.description)}</p>` : ''}
-        <div class="task-meta">
+        ${assigneeHTML}
+        ${tagsHTML}
+        <div class="task-footer">
             <span class="task-date">📅 ${formattedDate}</span>
             <button class="delete-task" data-task-id="${task.id}" title="Eliminar tarea">🗑️</button>
         </div>
@@ -180,6 +237,8 @@ function renderTask(task) {
     
     // Añadir a la columna
     columnElement.appendChild(taskCard);
+    
+    
 }
 
 // ============================================
@@ -293,11 +352,13 @@ function handleDrop(e) {
 /**
  * Crea una nueva tarea
  */
-function createTask(title, description) {
+function createTask(title, description, assignee, tags) {
     const newTask = {
         id: generateId(),
         title: title.trim(),
         description: description.trim(),
+        assignee: assignee || '',
+        tags: tags || [],
         status: 'todo',
         createdAt: new Date().toISOString()
     };
@@ -398,9 +459,14 @@ function handleFormSubmit(e) {
     
     const title = document.getElementById('taskTitle').value;
     const description = document.getElementById('taskDescription').value;
+    const assignee = document.getElementById('taskAssignee').value;
+    
+    // Obtener etiquetas seleccionadas
+    const tagCheckboxes = document.querySelectorAll('input[name="tags"]:checked');
+    const tags = Array.from(tagCheckboxes).map(cb => cb.value);
     
     if (title.trim()) {
-        createTask(title, description);
+        createTask(title, description, assignee, tags);
         closeModal();
     }
 }
@@ -458,6 +524,71 @@ function clearAllData() {
         renderBoard();
         console.log('🧹 Datos limpiados');
     }
+}
+
+
+// ============================================
+// SISTEMA DE FILTROS
+// ============================================
+
+/**
+ * Verifica si una tarea pasa los filtros activos
+ */
+function passesFilters(task) {
+    // Filtro por persona
+    if (activeFilters.person && task.assignee !== activeFilters.person) {
+        return false;
+    }
+    
+    // Filtro por etiqueta
+    if (activeFilters.tag && (!task.tags || !task.tags.includes(activeFilters.tag))) {
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Aplica filtros y re-renderiza el tablero
+ */
+function applyFilters() {
+    const personFilter = document.getElementById('filterPerson').value;
+    const tagFilter = document.getElementById('filterTag').value;
+    
+    activeFilters.person = personFilter;
+    activeFilters.tag = tagFilter;
+    
+    renderBoard();
+    
+    console.log('🔍 Filtros aplicados:', activeFilters);
+}
+
+/**
+ * Limpia todos los filtros
+ */
+function clearFilters() {
+    activeFilters.person = '';
+    activeFilters.tag = '';
+    
+    document.getElementById('filterPerson').value = '';
+    document.getElementById('filterTag').value = '';
+    
+    renderBoard();
+    
+    console.log('🧹 Filtros limpiados');
+}
+
+/**
+ * Configura los event listeners de filtros
+ */
+function setupFilterListeners() {
+    const personFilter = document.getElementById('filterPerson');
+    const tagFilter = document.getElementById('filterTag');
+    const clearBtn = document.getElementById('clearFilters');
+    
+    personFilter.addEventListener('change', applyFilters);
+    tagFilter.addEventListener('change', applyFilters);
+    clearBtn.addEventListener('click', clearFilters);
 }
 
 // Exponer función de limpieza en consola para desarrollo

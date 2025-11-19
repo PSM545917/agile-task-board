@@ -470,6 +470,224 @@ body {
     opacity: 0.8;
 }
 
+
+/* ============================================
+   BARRA DE FILTROS
+   ============================================ */
+.filter-bar {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    background: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.btn-small {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   FORMULARIO - NUEVOS ELEMENTOS
+   ============================================ */
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Contenedor de etiquetas (checkboxes) */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.tag-checkbox {
+    cursor: pointer;
+}
+
+.tag-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.tag-label {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition: var(--transition);
+    opacity: 0.6;
+}
+
+.tag-checkbox input[type="checkbox"]:checked + .tag-label {
+    opacity: 1;
+    transform: scale(1.05);
+    border-color: currentColor;
+}
+
+/* Colores de etiquetas */
+.tag-bug {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+.tag-feature {
+    background: rgba(147, 51, 234, 0.15);
+    color: #9333ea;
+}
+
+.tag-documentation {
+    background: rgba(59, 130, 246, 0.15);
+    color: #2563eb;
+}
+
+.tag-testing {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+}
+
+.tag-urgente {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+/* ============================================
+   TARJETA DE TAREA - NUEVOS ELEMENTOS
+   ============================================ */
+.task-assignee {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.assignee-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+/* Colores por persona */
+.assignee-ana { background: #ec4899; }
+.assignee-luis { background: #3b82f6; }
+.assignee-marta { background: #8b5cf6; }
+.assignee-pablo { background: #10b981; }
+.assignee-sofia { background: #f59e0b; }
+
+.task-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: var(--spacing-xs);
+}
+
+.task-tag {
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Estilos de badges de etiquetas en tarjetas */
+.task-tag.tag-bug {
+    background: #dc2626;
+    color: white;
+}
+
+.task-tag.tag-feature {
+    background: #9333ea;
+    color: white;
+}
+
+.task-tag.tag-documentation {
+    background: #2563eb;
+    color: white;
+}
+
+.task-tag.tag-testing {
+    background: #059669;
+    color: white;
+}
+
+.task-tag.tag-urgente {
+    background: #d97706;
+    color: white;
+}
+
+/* Actualizar task-meta para incluir assignee */
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--border-color);
+}
+
+
+
+
+
+
+
+
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
@@ -521,6 +739,20 @@ body {
         width: 100%;
         justify-content: center;
     }
+
+    .filter-bar {
+    flex-direction: column;
+    }
+
+    .filter-group {
+    width: 100%;
+    }
+
+    .tags-container {
+    flex-direction: column;
+    }
+
+    
 }
 
 /* Móviles pequeños */
