@@ -681,7 +681,271 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
+/* ============================================
+   HEADER CON NAVEGACIÓN
+   ============================================ */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+}
 
+.header-nav {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.nav-link {
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   DASHBOARD - KPIs
+   ============================================ */
+.kpi-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    transition: var(--transition);
+    border-left: 4px solid transparent;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.kpi-primary { border-left-color: var(--primary-color); }
+.kpi-success { border-left-color: var(--success-color); }
+.kpi-warning { border-left-color: var(--warning-color); }
+.kpi-info { border-left-color: #3b82f6; }
+
+.kpi-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.kpi-content {
+    flex: 1;
+}
+
+.kpi-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1;
+}
+
+.kpi-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
+}
+
+/* ============================================
+   DASHBOARD - GRÁFICOS
+   ============================================ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.chart-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.chart-large {
+    grid-column: 1 / -1;
+}
+
+.chart-header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.chart-header h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.chart-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+.chart-large .chart-container {
+    height: 350px;
+}
+
+/* ============================================
+   DASHBOARD - TABLA DE TAREAS ANTIGUAS
+   ============================================ */
+.old-tasks-section {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.old-tasks-section h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.tasks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.tasks-table thead {
+    background: var(--bg-column);
+}
+
+.tasks-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tasks-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.tasks-table tr:hover {
+    background: var(--bg-column);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-lg);
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+.days-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-column);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.days-warning {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+.table-tag {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 0.25rem;
+}
+
+/* ============================================
+   RESPONSIVE - DASHBOARD
+   ============================================ */
+@media (max-width: 1024px) {
+    .kpi-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .header-nav {
+        width: 100%;
+    }
+    
+    .nav-link {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .kpi-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .kpi-value {
+        font-size: 2rem;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+    
+    .tasks-table {
+        font-size: 0.85rem;
+    }
+    
+    .tasks-table th,
+    .tasks-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}
 
 
 
