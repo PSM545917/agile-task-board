@@ -1,0 +1,269 @@
+@startuml Agile Task Board - Class Diagram
+
+!define ENTITY #E1F5FE
+!define MANAGER #FFF3E0
+!define UI #F3E5F5
+!define STORAGE #E8F5E9
+
+title Diagrama de Clases - Agile Task Board\n(Vanilla JS + LocalStorage)
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 11
+skinparam packageStyle rectangle
+
+' ==================== ENTIDADES ====================
+package "Entidades" ENTITY {
+  class Task {
+    - id: string
+    - title: string
+    - description: string
+    - status: string
+    - assignee: string
+    - tags: string[]
+    - createdAt: string
+    --
+    + Task(title, description)
+    + getId(): string
+    + getStatus(): string
+    + setStatus(status): void
+    + addTag(tag): void
+    + removeTag(tag): void
+  }
+  
+  class Person {
+    - name: string
+    - initials: string
+    - color: string
+    --
+    + getInitials(): string
+    + getColor(): string
+  }
+  
+  class Tag {
+    - name: string
+    - color: string
+    --
+    + getName(): string
+    + getColor(): string
+  }
+}
+
+' ==================== GESTORES ====================
+package "Gestión de Datos" MANAGER {
+  class TaskManager <<Manager>> {
+    - tasks: Task[]
+    --
+    + createTask(data): Task
+    + updateTask(id, data): boolean
+    + deleteTask(id): boolean
+    + getTaskById(id): Task
+    + getAllTasks(): Task[]
+    + filterByStatus(status): Task[]
+    + filterByAssignee(assignee): Task[]
+    + filterByTag(tag): Task[]
+  }
+  
+  class StorageManager <<Singleton>> {
+    - {static} instance: StorageManager
+    - storageKey: string
+    --
+    + {static} getInstance(): StorageManager
+    + saveData(key, data): boolean
+    + loadData(key): any
+    + deleteData(key): boolean
+    + clearStorage(): void
+  }
+  
+  class FilterManager <<Manager>> {
+    - activeFilters: Map
+    --
+    + setFilter(type, value): void
+    + clearFilters(): void
+    + applyFilters(tasks): Task[]
+    + getActiveFilters(): Map
+  }
+}
+
+' ==================== COMPONENTES UI ====================
+package "Componentes UI" UI {
+  class TaskBoard <<Component>> {
+    - columns: Column[]
+    - draggedTask: Task
+    --
+    + render(): void
+    + addColumn(column): void
+    + moveTask(taskId, newStatus): void
+    + updateCounters(): void
+    + setupDragAndDrop(): void
+  }
+  
+  class Column <<Component>> {
+    - id: string
+    - title: string
+    - tasks: Task[]
+    --
+    + render(): void
+    + addTask(task): void
+    + removeTask(taskId): void
+    + getTaskCount(): number
+  }
+  
+  class BoardRenderer <<Component>> {
+    --
+    + renderBoard(tasks): void
+    + renderTask(task): HTMLElement
+    + updateTaskCard(taskId): void
+    + clearBoard(): void
+  }
+  
+  class ModalHandler <<Component>> {
+    - modalElement: HTMLElement
+    - isOpen: boolean
+    --
+    + open(): void
+    + close(): void
+    + reset(): void
+    + getFormData(): object
+    + validateForm(): boolean
+  }
+  
+  class FilterHandler <<Component>> {
+    - personFilter: HTMLElement
+    - tagFilter: HTMLElement
+    --
+    + setupListeners(): void
+    + applyFilters(): void
+    + clearFilters(): void
+    + updateUI(): void
+  }
+  
+  class MetricsDashboard <<Component>> {
+    - charts: Chart[]
+    --
+    + renderKPIs(): void
+    + createBurndownChart(): void
+    + createTasksByPersonChart(): void
+    + createTasksByStatusChart(): void
+    + renderOldTasksTable(): void
+    + updateMetrics(): void
+  }
+}
+
+' ==================== CONTROLADORES ====================
+package "Controladores" MANAGER {
+  class DragDropHandler <<Handler>> {
+    - draggedElement: HTMLElement
+    --
+    + handleDragStart(event): void
+    + handleDragOver(event): void
+    + handleDrop(event): void
+    + handleDragEnd(event): void
+  }
+  
+  class EventManager <<Handler>> {
+    - listeners: Map
+    --
+    + addEventListener(element, type, handler): void
+    + removeEventListener(element, type): void
+    + setupEventListeners(): void
+  }
+}
+
+' ==================== UTILIDADES ====================
+package "Utilidades" STORAGE {
+  class Validator <<Utility>> {
+    --
+    + {static} validateTitle(title): boolean
+    + {static} validateForm(data): boolean
+    + {static} escapeHtml(text): string
+  }
+  
+  class IDGenerator <<Utility>> {
+    --
+    + {static} generateId(): string
+    + {static} generateTimestamp(): string
+  }
+}
+
+' ==================== RELACIONES ====================
+
+' Task relationships
+Task "1" *-- "0..*" Tag : contains >
+Task "0..1" o-- "1" Person : assigned to >
+
+' TaskManager relationships
+TaskManager "1" o-- "0..*" Task : manages >
+TaskManager ..> StorageManager : uses >
+TaskManager ..> IDGenerator : uses >
+TaskManager ..> Validator : uses >
+
+' FilterManager relationships
+FilterManager ..> TaskManager : filters tasks >
+
+' UI Components relationships
+TaskBoard "1" *-- "3" Column : contains >
+Column "1" o-- "0..*" Task : displays >
+BoardRenderer ..> TaskBoard : renders >
+BoardRenderer ..> TaskManager : gets data >
+ModalHandler ..> TaskManager : creates tasks >
+ModalHandler ..> Validator : validates >
+FilterHandler ..> FilterManager : controls >
+FilterHandler ..> BoardRenderer : triggers update >
+
+' DragDropHandler relationships
+DragDropHandler ..> TaskManager : updates status >
+DragDropHandler ..> BoardRenderer : re-renders >
+
+' MetricsDashboard relationships
+MetricsDashboard ..> TaskManager : reads data >
+MetricsDashboard ..> StorageManager : loads data >
+
+' EventManager relationships
+EventManager ..> ModalHandler : manages events >
+EventManager ..> FilterHandler : manages events >
+EventManager ..> DragDropHandler : manages events >
+
+' StorageManager relationships
+StorageManager ..> Task : serializes/deserializes >
+
+' ==================== NOTAS ====================
+note right of Task
+  **Entidad principal**
+  Representa una tarea
+  en el tablero Kanban
+end note
+
+note right of StorageManager
+  **Patrón Singleton**
+  Única instancia para
+  gestionar LocalStorage
+end note
+
+note right of TaskBoard
+  **Patrón Observer**
+  Notifica cambios a
+  los componentes hijos
+end note
+
+note bottom of MetricsDashboard
+  **Usa Chart.js**
+  Para visualización
+  de métricas
+end note
+
+' ==================== LEYENDA ====================
+legend right
+  |<ENTITY> Entidades de dominio |
+  |<MANAGER> Gestión y lógica de negocio |
+  |<UI> Componentes de interfaz |
+  |<STORAGE> Utilidades y helpers |
+  
+  **Estereotipos:**
+  <<Manager>> - Gestores de datos
+  <<Component>> - Componentes UI
+  <<Handler>> - Manejadores de eventos
+  <<Utility>> - Funciones auxiliares
+  <<Singleton>> - Patrón singleton
+endlegend
+
+@enduml

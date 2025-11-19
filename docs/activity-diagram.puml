@@ -1,0 +1,236 @@
+@startuml Agile Task Board - Activity Diagram
+
+title Diagrama de Actividades: Flujo Completo de un Sprint Scrum\n(Agile Task Board - Práctica Académica)
+
+|#LightBlue|Product Owner|
+|#LightGreen|Scrum Master|
+|#LightYellow|Developer Team|
+
+|Product Owner|
+start
+:📋 Preparar Product Backlog;
+note right
+  - Priorizar User Stories
+  - Estimar Story Points
+  - Definir Acceptance Criteria
+end note
+
+:✅ Product Backlog refinado;
+
+|Scrum Master|
+:📅 Organizar Sprint Planning;
+
+|Product Owner|
+:Presentar User Stories
+de mayor prioridad;
+
+|Developer Team|
+:Revisar User Stories;
+:Estimar capacidad del Sprint;
+
+if (¿Equipo puede comprometerse?) then (Sí)
+  :✅ Seleccionar User Stories
+  para el Sprint;
+  
+  :Crear Sprint Backlog;
+  note right
+    **Sprint Goal definido:**
+    - US-001: Tablero Kanban + Drag & Drop
+    - US-002: Crear tareas
+    - US-003: Asignación y etiquetas
+    - US-004: Dashboard de métricas
+  end note
+else (No)
+  :Reducir alcance;
+  backward :Revisar prioridades;
+endif
+
+|Scrum Master|
+:🚀 Iniciar Sprint
+(2 semanas);
+
+== Ciclo Diario del Sprint ==
+
+repeat
+  |Scrum Master|
+  :📞 Facilitar Daily Scrum
+  (15 min);
+  
+  |Developer Team|
+  fork
+    :👨‍💻 Developer 1:
+    ¿Qué hice ayer?
+    ¿Qué haré hoy?
+    ¿Impedimentos?;
+  fork again
+    :👩‍💻 Developer 2:
+    ¿Qué hice ayer?
+    ¿Qué haré hoy?
+    ¿Impedimentos?;
+  fork again
+    :👨‍💻 Developer 3:
+    ¿Qué hice ayer?
+    ¿Qué haré hoy?
+    ¿Impedimentos?;
+  end fork
+  
+  if (¿Hay impedimentos?) then (Sí)
+    |Scrum Master|
+    :🔧 Resolver impedimentos;
+    note left
+      - Bloqueos técnicos
+      - Recursos necesarios
+      - Dependencias externas
+    end note
+  else (No)
+    :✅ Continuar;
+  endif
+  
+  |Developer Team|
+  :Seleccionar tarea del
+  Sprint Backlog;
+  
+  :Mover tarea a
+  "In Progress" en tablero;
+  
+  partition "Desarrollo de Tarea" {
+    :💻 Implementar código
+    (HTML/CSS/JS);
+    
+    :Actualizar tarea con
+    assignee y tags;
+    
+    :🧪 Realizar pruebas
+    funcionales;
+    
+    if (¿Cumple DoD?) then (No)
+      :Corregir y mejorar;
+      backward :Re-testear;
+    else (Sí)
+      :✅ Mover a "Done";
+      
+      :Actualizar Burndown Chart
+      en Dashboard;
+    endif
+  }
+  
+  |Scrum Master|
+  :Actualizar métricas
+  del equipo;
+  
+  if (¿Sprint finalizado?) then (No)
+    :Siguiente día;
+  else (Sí)
+    :Fin del Sprint;
+  endif
+
+repeat while (Sprint en curso?) is (Sí)
+->No;
+
+== Sprint Review ==
+
+|Scrum Master|
+:📊 Organizar Sprint Review;
+
+|Developer Team|
+:🎯 Demostrar incremento
+funcional;
+
+partition "Demostración" {
+  :Mostrar tablero Kanban
+  funcionando;
+  
+  :Demo de drag & drop;
+  
+  :Demo de asignación
+  y etiquetas;
+  
+  :Presentar Dashboard
+  de métricas;
+}
+
+|Product Owner|
+:Revisar incremento;
+
+if (¿Cumple criterios
+de aceptación?) then (Sí)
+  :✅ Aceptar User Stories
+  completadas;
+  
+  :Actualizar Product Backlog;
+else (No)
+  :❌ Rechazar y mover
+  al siguiente Sprint;
+  
+  :Documentar feedback;
+endif
+
+|Product Owner|
+:📝 Actualizar prioridades
+del Product Backlog;
+
+== Sprint Retrospective ==
+
+|Scrum Master|
+:🔄 Facilitar Retrospectiva;
+
+|Developer Team|
+fork
+  :🟢 ¿Qué funcionó bien?;
+  note right
+    - Buena comunicación
+    - Tablero visual útil
+    - LocalStorage simple
+  end note
+fork again
+  :🔴 ¿Qué mejorar?;
+  note right
+    - Estimaciones optimistas
+    - Falta de tests
+    - CSS responsive tardío
+  end note
+fork again
+  :💡 ¿Plan de mejora?;
+  note right
+    - Pair programming
+    - Testing desde inicio
+    - Mobile-first approach
+  end note
+end fork
+
+|Scrum Master|
+:📋 Documentar acuerdos
+de mejora;
+
+:✅ Cerrar Sprint;
+
+|Product Owner|
+if (¿Hay más Sprints?) then (Sí)
+  :Preparar siguiente Sprint;
+  backward :Nueva iteración;
+else (No)
+  :🎓 Proyecto finalizado;
+  
+  :Entregar documentación:
+  - Product Backlog
+  - Diagramas UML
+  - Código fuente
+  - Manual de usuario;
+  
+  stop
+endif
+
+== Entregables del Sprint ==
+
+note right
+  **Artefactos generados:**
+  ✅ Código funcional (HTML/CSS/JS)
+  ✅ LocalStorage implementado
+  ✅ Dashboard con métricas
+  ✅ Product Backlog actualizado
+  ✅ Burndown Chart
+  ✅ Documentación técnica
+  ✅ Diagramas UML completos
+end note
+
+@enduml

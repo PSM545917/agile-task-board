@@ -1,0 +1,156 @@
+@startuml Agile Task Board - Sequence Diagram
+
+title Diagrama de Secuencia: Crear Tarea y Asignar Persona + Etiquetas\n(Agile Task Board)
+
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxmessagesize 200
+skinparam sequenceParticipant underline
+
+actor Usuario as user #LightBlue
+participant "UI: BoardView" as ui #LightGreen
+participant "Modal\nHandler" as modal #Yellow
+participant "Validator" as validator #Orange
+participant "Task\nManager" as taskMgr #Pink
+participant "Storage\nManager" as storage #LightGray
+participant "Board\nRenderer" as renderer #Cyan
+database "LocalStorage" as ls #LightYellow
+
+== Iniciar Creación de Tarea ==
+
+user -> ui: Click en "Nueva Tarea"
+activate ui
+ui -> modal: openModal()
+activate modal
+modal -> modal: reset()
+modal -> modal: focus(titleInput)
+modal --> user: Mostrar formulario
+deactivate modal
+
+== Completar Formulario ==
+
+user -> modal: Ingresar título
+user -> modal: Ingresar descripción (opcional)
+user -> modal: Seleccionar persona asignada
+activate modal
+modal -> modal: updateAssigneePreview()
+modal --> user: Mostrar preview
+deactivate modal
+
+user -> modal: Marcar etiquetas
+activate modal
+loop Para cada etiqueta
+  modal -> modal: toggleTagSelection()
+  modal --> user: Actualizar visualización
+end
+deactivate modal
+
+== Enviar Formulario ==
+
+user -> modal: Click en "Crear Tarea"
+activate modal
+modal -> modal: handleFormSubmit(event)
+modal -> modal: event.preventDefault()
+
+' Validación
+modal -> validator: validateForm(formData)
+activate validator
+validator -> validator: validateTitle(title)
+alt Título vacío
+  validator --> modal: return false
+  modal --> user: ❌ Mostrar error
+  deactivate validator
+  deactivate modal
+else Título válido
+  validator --> modal: return true
+  deactivate validator
+  
+  ' Obtener datos
+  modal -> modal: getFormData()
+  activate modal
+  modal -> modal: title = getTitleValue()
+  modal -> modal: description = getDescriptionValue()
+  modal -> modal: assignee = getSelectedAssignee()
+  modal -> modal: tags = getSelectedTags()
+  modal --> modal: formData = {title, description, assignee, tags}
+  deactivate modal
+  
+  ' Crear tarea
+  modal -> taskMgr: createTask(formData)
+  activate taskMgr
+  taskMgr -> taskMgr: generateId()
+  taskMgr -> taskMgr: addTimestamp()
+  taskMgr -> taskMgr: setStatus("todo")
+  
+  create participant "Task\nObject" as task #LightPink
+  taskMgr -> task: new Task(data)
+  activate task
+  task -> task: this.id = id
+  task -> task: this.title = title
+  task -> task: this.assignee = assignee
+  task -> task: this.tags = tags
+  task --> taskMgr: taskObject
+  deactivate task
+  
+  taskMgr -> taskMgr: tasks.push(task)
+  
+  ' Guardar en LocalStorage
+  taskMgr -> storage: saveTasksToStorage(tasks)
+  activate storage
+  storage -> storage: JSON.stringify(tasks)
+  storage -> ls: localStorage.setItem(key, data)
+  activate ls
+  ls --> storage: ✅ Guardado exitoso
+  deactivate ls
+  storage --> taskMgr: success
+  deactivate storage
+  
+  taskMgr --> modal: ✅ Tarea creada
+  deactivate taskMgr
+  
+  ' Cerrar modal
+  modal -> modal: close()
+  modal -> modal: reset()
+  modal --> user: ✅ Modal cerrado
+  deactivate modal
+  
+  ' Re-renderizar tablero
+  modal -> renderer: renderBoard()
+  activate renderer
+  renderer -> taskMgr: getAllTasks()
+  activate taskMgr
+  taskMgr --> renderer: tasks[]
+  deactivate taskMgr
+  
+  renderer -> renderer: clearBoard()
+  
+  loop Para cada tarea
+    renderer -> renderer: renderTask(task)
+    activate renderer
+    renderer -> renderer: createTaskCard(task)
+    renderer -> renderer: addAssigneeAvatar()
+    renderer -> renderer: addTagBadges()
+    renderer -> renderer: appendToColumn()
+    deactivate renderer
+  end
+  
+  renderer -> renderer: updateCounters()
+  renderer --> ui: ✅ Tablero actualizado
+  deactivate renderer
+  
+  ui --> user: ✅ Nueva tarea visible\nen columna "To Do"
+  deactivate ui
+end
+
+== Notificación ==
+
+ui -> user: 🎉 Tarea creada exitosamente
+note right of user
+  La tarea ahora aparece en 
+  la columna "To Do" con:
+  - Avatar del asignado
+  - Badges de etiquetas
+  - Información completa
+end note
+
+@enduml
